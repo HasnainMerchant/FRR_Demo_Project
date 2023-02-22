@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+</head>
+<script>
+    function displayEmp() {
+        fetch("http://localhost:9191/employee", {
+            method: 'GET',
+        })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("NETWORK RESPONSE ERROR");
+            }
+        })
+        .then(data => {
+            // console.log(data);
+            displayEmployees(data)
+        })
+        .catch((error) => console.log("FETCH ERROR: ", error));
+    }
+
+    function displayEmployees(data) {
+        var temp='';
+        for(var i=0, len = data.length; i < len; i++){
+            temp += '<tr><td>' + data[i].id + '</td>';
+            temp += '<td>' + data[i].name + '</td>';
+            temp += '<td>' + data[i].salary + '</td></tr>';
+        }
+        document.getElementById("tbody").innerHTML = temp;
+    }
+
+    const thisForm = document.querySelector('#empForm');
+    if(thisForm){
+        console.log("INSIDE");
+        thisForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(thisForm).entries()
+        const response = await fetch('http://localhost:9191/addemp', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(Object.fromEntries(formData))
+        });
+            const result = await response.json();
+            console.log(result);
+        });
+    }
+
+
+</script>
+<body>
+    <center>
+        <h2>Employee Records</h2>
+        <button onclick="displayEmp();">Show Records</button>
+        <div id="records">
+            <table border="1px">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Employee Salary</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        <h2>Add Employee Records</h2>
+        <div id="addemp">
+            <form method="post" id="empForm">
+               Enter Employee ID <input type="number" name="empID" id="empid"><br>
+               Enter Employee Name <input type="text" name="empName" id="empname"><br>
+               Enter Employee Salary <input type="text" name="empSalary" id="empsalary">
+               <br><input type="submit" value="Add Employee">
+            </form>
+        </div>
+        <h2>Update Employee Records</h2>
+        <div id="updatemp">
+            <form action="" method="put">
+               Enter Employee ID <input type="number" name="empID" id="empid"><br>
+               Enter Employee Name <input type="text" name="empName" id="empname"><br>
+               Enter Employee Salary <input type="text" name="empSalary" id="empsalary">
+               <br><input type="submit" value="Update Employee">
+            </form>
+        </div>
+        <h2>Delete Employee Records</h2>
+            <form action="" method="delete">
+                Enter Employee ID <input type="number" name="empID" id="empid"><br>
+                <input type="submit" value="Delete Employee">
+            </form>
+        <div id="deleteemp"></div>
+    </center>
+</body>
+</html>
