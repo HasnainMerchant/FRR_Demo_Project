@@ -10,5 +10,11 @@ class EmployeeDemoApplicationTests {
 	void contextLoads() {
 		assert(true);
 	}
+	
+	@Test 
+	void applicationContextTest() {
+		EmployeeDemoApplication.main(new String[] {});
+		assert(true);
+	}
 
 }
